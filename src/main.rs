@@ -9,25 +9,26 @@ mod behaviour;
 use behaviour::CustomBehaviour;
 
 #[derive(NetworkBehaviour)]
-#[behaviour(out_event = "BadOutEvent")]
-struct BadBehaviour {
+#[behaviour(out_event = "BadOutEvent<T>")]
+struct BadBehaviour<T: 'static> {
     mdns: Mdns,
-    custom: CustomBehaviour,
+    custom: CustomBehaviour<T>,
 }
 
 #[derive(Debug)]
-enum BadOutEvent {
+enum BadOutEvent<T> {
     Mdns(MdnsEvent),
+    Template(T),
     None,
 }
 
-impl From<MdnsEvent> for BadOutEvent {
+impl<T> From<MdnsEvent> for BadOutEvent<T> {
     fn from(e: MdnsEvent) -> Self {
         Self::Mdns(e)
     }
 }
 
-impl From<void::Void> for BadOutEvent {
+impl<T> From<void::Void> for BadOutEvent<T> {
     fn from(_e: void::Void) -> Self {
         Self::None
     }

@@ -80,11 +80,11 @@ impl From<()> for HandlerEvent {
     }
 }
 
-pub struct CustomBehaviour {
-    _data: i32,
+pub struct CustomBehaviour<T: 'static> {
+    _data: T,
 }
 
-impl NetworkBehaviour for CustomBehaviour {
+impl<T> NetworkBehaviour for CustomBehaviour<T> {
     type ConnectionHandler = OneShotHandler<CustomConfig, CustomMessage, HandlerEvent>;
     type OutEvent = void::Void;
 
