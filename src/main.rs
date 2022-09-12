@@ -1,36 +1,35 @@
-use libp2p::{NetworkBehaviour, mdns::{Mdns, MdnsEvent}};
+use libp2p::{
+    mdns::{Mdns, MdnsEvent},
+    NetworkBehaviour,
+};
+
+use std::fmt::Debug;
+
+mod behaviour;
+use behaviour::CustomBehaviour;
 
 #[derive(NetworkBehaviour)]
-#[behaviour(out_event = "GoodOutEvent")]
-struct GoodBehaviour {
+#[behaviour(out_event = "BadOutEvent")]
+struct BadBehaviour {
     mdns: Mdns,
+    custom: CustomBehaviour,
 }
 
-enum GoodOutEvent {
+#[derive(Debug)]
+enum BadOutEvent {
     Mdns(MdnsEvent),
+    None,
 }
 
-impl From<MdnsEvent> for GoodOutEvent {
-    fn from(v: MdnsEvent) -> Self {
-        Self::Mdns(v)
+impl From<MdnsEvent> for BadOutEvent {
+    fn from(e: MdnsEvent) -> Self {
+        Self::Mdns(e)
     }
 }
 
-#[derive(NetworkBehaviour)]
-#[behaviour(out_event = "BadOutEvent<T>")]
-struct BadBehaviour<T> {
-    mdns: Mdns,
-    template: Option<T>,
-}
-
-enum BadOutEvent<T> {
-    Mdns(MdnsEvent),
-    Template(T),
-}
-
-impl<T> From<MdnsEvent> for BadOutEvent<T> {
-    fn from(v: MdnsEvent) -> Self {
-        Self::Mdns(v)
+impl From<void::Void> for BadOutEvent {
+    fn from(_e: void::Void) -> Self {
+        Self::None
     }
 }
 

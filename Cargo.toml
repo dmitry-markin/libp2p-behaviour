@@ -7,3 +7,5 @@ edition = "2021"
 
 [dependencies]
 libp2p = "0.48.0"
+void = "1.0.2"
+futures = "0.3.21"
