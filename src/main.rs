@@ -3,14 +3,14 @@ use libp2p::{
     NetworkBehaviour,
 };
 
-use std::fmt::Debug;
+use std::{fmt::Debug, marker::PhantomData};
 
 mod behaviour;
 use behaviour::CustomBehaviour;
 
 #[derive(NetworkBehaviour)]
-#[behaviour(out_event = "BadOutEvent<T>")]
-struct BadBehaviour<T: 'static> {
+#[behaviour(out_event = "BadOutEvent")]
+struct BadBehaviour<T: 'static + Send> {
     mdns: Mdns,
     custom: CustomBehaviour<T>,
 }
@@ -18,8 +18,8 @@ struct BadBehaviour<T: 'static> {
 #[derive(Debug)]
 enum BadOutEvent<T> {
     Mdns(MdnsEvent),
-    Template(T),
     None,
+    Phantom(PhantomData<T>),
 }
 
 impl<T> From<MdnsEvent> for BadOutEvent<T> {
