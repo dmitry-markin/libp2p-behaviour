@@ -16,19 +16,18 @@ struct BadBehaviour<T: 'static + Send> {
 }
 
 #[derive(Debug)]
-enum BadOutEvent<T> {
+enum BadOutEvent {
     Mdns(MdnsEvent),
     None,
-    Phantom(PhantomData<T>),
 }
 
-impl<T> From<MdnsEvent> for BadOutEvent<T> {
+impl From<MdnsEvent> for BadOutEvent {
     fn from(e: MdnsEvent) -> Self {
         Self::Mdns(e)
     }
 }
 
-impl<T> From<void::Void> for BadOutEvent<T> {
+impl From<void::Void> for BadOutEvent {
     fn from(_e: void::Void) -> Self {
         Self::None
     }
